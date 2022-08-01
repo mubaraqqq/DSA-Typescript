@@ -1,3 +1,7 @@
+function log(x: unknown): unknown {
+  return console.log(x);
+}
+
 // Chapter 2 - Arrays
 // Exercise 1
 
@@ -18,17 +22,6 @@ const gradeObject: gradeObjectType = {
     return averageGrade;
   },
 };
-
-console.log(gradeObject.grades);
-gradeObject.addGrade(50);
-console.log(gradeObject.grades);
-gradeObject.addGrade(100);
-gradeObject.addGrade(100);
-gradeObject.addGrade(100);
-gradeObject.addGrade(100);
-gradeObject.addGrade(100000000000000000000000000000000000);
-let average = gradeObject.gradeAverage();
-average;
 
 // Exercise 2
 let wordArray: string[] = ["Mubaraq", "Mubashir", "Mutmainah"];
@@ -74,6 +67,147 @@ let weeklyTemp: weeklyTempsType = {
   },
 };
 
-console.log(weeklyTemp.weekAverage(3));
+// Chapter 3 - Lists
+interface IList {
+  datastore: any[];
+  pos: number;
+  listSize: number;
+  clear: () => void;
+  find: (el: unknown) => number;
+  toString: () => [];
+  insert: (el: unknown, after: unknown) => boolean;
+  append: (el: unknown) => void;
+  remove: (el: unknown) => boolean;
+  front: () => void;
+  end: () => void;
+  prev: () => void;
+  next: () => void;
+  length: () => number;
+  currPos: () => number;
+  moveTo: () => void;
+  getElement: () => unknown;
+  contains: (el: unknown) => boolean;
+  addIfLarger: (el: unknown) => void;
+}
+// Chapter 3 - Lists
+// Exercise 1
 
-// Exercise 4
+class List implements IList {
+  datastore: unknown[] = [];
+  pos = 0;
+  listSize = 0;
+  clear(): void {
+    this.datastore = [];
+  }
+  find(el: unknown): number {
+    for (let i = 0; i < this.datastore.length; i++) {
+      if (this.datastore[i] === el) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  toString(): any {
+    return this.datastore;
+  }
+  insert(el: unknown, after: unknown): boolean {
+    this.datastore[this.listSize++] = el;
+    let elementPosition = this.find(after);
+    if (elementPosition > -1) {
+      this.datastore.splice(elementPosition + 1, 0, el);
+      ++this.listSize;
+      return true;
+    }
+    return false;
+  }
+  append(el: unknown): void {
+    this.datastore[this.listSize++] = el;
+  }
+  remove(el: unknown): boolean {
+    let foundOut = this.find(el);
+    if (foundOut > -1) {
+      this.datastore.splice(foundOut, 1);
+      --this.listSize;
+      return true;
+    }
+    return false;
+  }
+  front(): void {
+    this.pos = 0;
+  }
+  end(): void {
+    this.pos = this.listSize - 1;
+  }
+  prev(): void {
+    if (this.pos > 0) {
+      --this.pos;
+    }
+  }
+  next(): void {
+    if (this.pos < this.listSize) {
+      ++this.pos;
+    }
+  }
+  length(): number {
+    return this.listSize;
+  }
+  currPos(): number {
+    return this.pos;
+  }
+  moveTo(): void {}
+  getElement(): any {
+    let element = this.datastore[this.pos];
+    return element;
+  }
+  getElementInPos(pos: number): any {
+    return this.datastore[pos];
+  }
+  contains(el: unknown): boolean {
+    let foundOut = this.find(el);
+    if (foundOut > -1) return true;
+    return false;
+  }
+  addIfLarger(el: any): void {
+    let temp = this.getElementInPos(0);
+    for (this.front(); this.currPos() < this.listSize; this.next()) {
+      let curr = this.getElement();
+      if (temp > curr) temp = temp;
+      if (curr > temp) temp = curr;
+    }
+    if (el > temp) {
+      this.append(el);
+      ++this.listSize;
+    }
+  }
+}
+
+let names = new List();
+names.append(100);
+names.append(2);
+names.append(3);
+names.append(9);
+names.append(50);
+names.append(6);
+names.append(7);
+names.append(8);
+
+let list = names.datastore;
+list;
+names.front();
+log(names.getElement());
+names.next();
+log(names.getElement());
+names.next();
+log(names.getElement());
+names.prev();
+log(names.getElement());
+names.next();
+log(names.getElement());
+names.next();
+log(names.getElement());
+
+for (names.front(); names.currPos() < names.length() - 1; names.next()) {
+  console.log(names.getElement());
+}
+
+names.addIfLarger(500);

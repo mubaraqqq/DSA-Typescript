@@ -1,6 +1,7 @@
 "use strict";
-// Chapter 2 - Arrays
-// Exercise 1
+function log(x) {
+    return console.log(x);
+}
 const gradeObject = {
     grades: [],
     addGrade: function (grade) {
@@ -12,16 +13,6 @@ const gradeObject = {
         return averageGrade;
     },
 };
-console.log(gradeObject.grades);
-gradeObject.addGrade(50);
-console.log(gradeObject.grades);
-gradeObject.addGrade(100);
-gradeObject.addGrade(100);
-gradeObject.addGrade(100);
-gradeObject.addGrade(100);
-gradeObject.addGrade(100000000000000000000000000000000000);
-let average = gradeObject.gradeAverage();
-average;
 // Exercise 2
 let wordArray = ["Mubaraq", "Mubashir", "Mutmainah"];
 wordArray;
@@ -56,5 +47,125 @@ let weeklyTemp = {
         return weeklyAverage;
     },
 };
-console.log(weeklyTemp.weekAverage(3));
-// Exercise 4
+// Chapter 3 - Lists
+// Exercise 1
+class List {
+    constructor() {
+        this.datastore = [];
+        this.pos = 0;
+        this.listSize = 0;
+    }
+    clear() {
+        this.datastore = [];
+    }
+    find(el) {
+        for (let i = 0; i < this.datastore.length; i++) {
+            if (this.datastore[i] === el) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    toString() {
+        return this.datastore;
+    }
+    insert(el, after) {
+        this.datastore[this.listSize++] = el;
+        let elementPosition = this.find(after);
+        if (elementPosition > -1) {
+            this.datastore.splice(elementPosition + 1, 0, el);
+            ++this.listSize;
+            return true;
+        }
+        return false;
+    }
+    append(el) {
+        this.datastore[this.listSize++] = el;
+    }
+    remove(el) {
+        let foundOut = this.find(el);
+        if (foundOut > -1) {
+            this.datastore.splice(foundOut, 1);
+            --this.listSize;
+            return true;
+        }
+        return false;
+    }
+    front() {
+        this.pos = 0;
+    }
+    end() {
+        this.pos = this.listSize - 1;
+    }
+    prev() {
+        if (this.pos > 0) {
+            --this.pos;
+        }
+    }
+    next() {
+        if (this.pos < this.listSize) {
+            ++this.pos;
+        }
+    }
+    length() {
+        return this.listSize;
+    }
+    currPos() {
+        return this.pos;
+    }
+    moveTo() { }
+    getElement() {
+        let element = this.datastore[this.pos];
+        return element;
+    }
+    getElementInPos(pos) {
+        return this.datastore[pos];
+    }
+    contains(el) {
+        let foundOut = this.find(el);
+        if (foundOut > -1)
+            return true;
+        return false;
+    }
+    addIfLarger(el) {
+        let temp = this.getElementInPos(0);
+        for (this.front(); this.currPos() < this.listSize; this.next()) {
+            let curr = this.getElement();
+            if (temp > curr)
+                temp = temp;
+            if (curr > temp)
+                temp = curr;
+        }
+        if (el > temp) {
+            this.append(el);
+            ++this.listSize;
+        }
+    }
+}
+let names = new List();
+names.append(100);
+names.append(2);
+names.append(3);
+names.append(9);
+names.append(50);
+names.append(6);
+names.append(7);
+names.append(8);
+let list = names.datastore;
+list;
+names.front();
+log(names.getElement());
+names.next();
+log(names.getElement());
+names.next();
+log(names.getElement());
+names.prev();
+log(names.getElement());
+names.next();
+log(names.getElement());
+names.next();
+log(names.getElement());
+for (names.front(); names.currPos() < names.length() - 1; names.next()) {
+    console.log(names.getElement());
+}
+names.addIfLarger(500);
