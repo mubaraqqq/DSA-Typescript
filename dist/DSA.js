@@ -48,7 +48,6 @@ let weeklyTemp = {
     },
 };
 // Chapter 3 - Lists
-// Exercise 1
 class List {
     constructor() {
         this.datastore = [];
@@ -129,7 +128,7 @@ class List {
     }
     addIfLarger(el) {
         let temp = this.getElementInPos(0);
-        for (this.front(); this.currPos() < this.listSize; this.next()) {
+        for (this.front(); this.currPos() <= this.length() - 1; this.next()) {
             let curr = this.getElement();
             if (temp > curr)
                 temp = temp;
@@ -137,6 +136,20 @@ class List {
                 temp = curr;
         }
         if (el > temp) {
+            this.append(el);
+            ++this.listSize;
+        }
+    }
+    addIfSmaller(el) {
+        let temp = this.getElementInPos(0);
+        for (this.front(); this.currPos() <= this.length() - 1; this.next()) {
+            let curr = this.getElement();
+            if (temp > curr)
+                temp = curr;
+            if (curr > temp)
+                temp = temp;
+        }
+        if (el < temp) {
             this.append(el);
             ++this.listSize;
         }
@@ -165,7 +178,47 @@ names.next();
 log(names.getElement());
 names.next();
 log(names.getElement());
-for (names.front(); names.currPos() < names.length() - 1; names.next()) {
-    console.log(names.getElement());
+// Exercise 1
+names.addIfLarger(50);
+list;
+// Exercise 2
+names.addIfSmaller(1);
+list;
+class Person {
+    constructor(name, gender = "unspecified") {
+        this.name = "";
+        this.gender = "unspecified";
+        this.name = name;
+        this.gender = gender;
+    }
+    static sortByGender(list, gender) {
+        let newList = [];
+        list.forEach((person) => {
+            if (person.gender === gender)
+                newList.push(person);
+        });
+        return newList;
+    }
 }
-names.addIfLarger(500);
+const Bob = new Person("Bob", "male");
+const Clara = new Person("Clara", "female");
+const Mil = new Person("Mil");
+const Mubaraq = new Person("Mubaraq", "male");
+const Ayanfe = new Person("Ayanfe", "female");
+const Glory = new Person("Glory", "female");
+const Pheelz = new Person("Pheelz");
+const Ayo = new Person("Ayo", "male");
+const Joy = new Person("Joy", "female");
+const Isa = new Person("Isa", "male");
+const PersonList = new List();
+PersonList.append(Bob);
+PersonList.append(Clara);
+PersonList.append(Mil);
+PersonList.append(Mubaraq);
+PersonList.append(Ayanfe);
+PersonList.append(Glory);
+PersonList.append(Pheelz);
+PersonList.append(Ayo);
+PersonList.append(Joy);
+PersonList.append(Isa);
+console.log(Person.sortByGender(PersonList.datastore, "male"));
