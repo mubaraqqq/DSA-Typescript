@@ -222,3 +222,84 @@ PersonList.append(Ayo);
 PersonList.append(Joy);
 PersonList.append(Isa);
 console.log(Person.sortByGender(PersonList.datastore, "male"));
+// Chapter 4 - Stacks
+class Stack {
+    constructor() {
+        this.datastore = [];
+        this.top = 0;
+    }
+    push(el) {
+        this.datastore[this.top++] = el;
+    }
+    pop() {
+        return this.datastore[--this.top];
+    }
+    peek() {
+        return this.datastore[this.top - 1];
+    }
+    length() {
+        return this.top;
+    }
+    clear() {
+        this.top = 0;
+    }
+}
+function numBase(num, base) {
+    let s = new Stack();
+    do {
+        s.push(num % base);
+        num = Math.floor(num / base);
+    } while (num > 0);
+    let converted = "";
+    while (s.length() > 0) {
+        converted += s.pop();
+    }
+    return converted;
+}
+console.log(numBase(125, 8));
+function isPalindrome(word) {
+    let s = new Stack();
+    for (let i = 0; i < word.length; i++) {
+        s.push(word[i]);
+    }
+    let reverseWord = "";
+    while (s.length() > 0)
+        reverseWord += s.pop();
+    return reverseWord.toLowerCase() === word.toLowerCase();
+}
+console.log(isPalindrome("sracecaRs"));
+function factorial(num) {
+    let s = new Stack();
+    // for (let i = 1; i <= num; i++) {
+    //   s.push(i);
+    // }
+    while (num > 1)
+        s.push(num--);
+    let factorial = 1;
+    while (s.length() > 0)
+        factorial *= s.pop();
+    return factorial;
+}
+console.log(factorial(0));
+// Exercise 1
+function balancedParentheses(str) {
+    let brackets = "(){}[]";
+    let s = new Stack();
+    for (let i = 0; i < str.length; i++) {
+        if (!brackets.includes(str[i]))
+            continue;
+        let bracketIndex = brackets.indexOf(str[i]);
+        if (bracketIndex % 2 === 0) {
+            s.push(bracketIndex + 1);
+        }
+        else {
+            let lastBracketIndex = s.peek();
+            if (bracketIndex === lastBracketIndex)
+                s.pop();
+            else
+                return false;
+        }
+    }
+    return s.length() === 0;
+}
+console.log(balancedParentheses("fre({[]{()})g"));

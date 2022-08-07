@@ -273,3 +273,94 @@ PersonList.append(Joy);
 PersonList.append(Isa);
 
 console.log(Person.sortByGender(PersonList.datastore as Person[], "male"));
+
+// Chapter 4 - Stacks
+interface IStack {
+  datastore: unknown[];
+  top: number;
+  push: (el: unknown) => void;
+  pop: () => unknown;
+  peek: () => unknown;
+  length: () => number;
+  clear: () => void;
+}
+
+// Chapter 4 - Stacks
+class Stack implements IStack {
+  datastore: unknown[] = [];
+  top = 0;
+  push(el: unknown): void {
+    this.datastore[this.top++] = el;
+  }
+  pop(): unknown {
+    return this.datastore[--this.top];
+  }
+  peek(): unknown {
+    return this.datastore[this.top - 1];
+  }
+  length(): number {
+    return this.top;
+  }
+  clear(): void {
+    this.top = 0;
+  }
+}
+
+function numBase(num: number, base: number): unknown {
+  let s = new Stack();
+  do {
+    s.push(num % base);
+    num = Math.floor(num / base);
+  } while (num > 0);
+  let converted = "";
+  while (s.length() > 0) {
+    converted += s.pop();
+  }
+  return converted;
+}
+
+console.log(numBase(125, 8));
+
+function isPalindrome(word: string): boolean {
+  let s = new Stack();
+  for (let i = 0; i < word.length; i++) {
+    s.push(word[i]);
+  }
+  let reverseWord = "";
+  while (s.length() > 0) reverseWord += s.pop();
+  return reverseWord.toLowerCase() === word.toLowerCase();
+}
+
+console.log(isPalindrome("sracecaRs"));
+
+function factorial(num: number): number {
+  let s = new Stack();
+  // for (let i = 1; i <= num; i++) {
+  //   s.push(i);
+  // }
+  while (num > 1) s.push(num--);
+  let factorial = 1;
+  while (s.length() > 0) factorial *= s.pop() as number;
+  return factorial;
+}
+
+console.log(factorial(0));
+// Exercise 1
+function balancedParentheses(str: string): boolean {
+  let brackets = "(){}[]";
+  let s = new Stack();
+  for (let i = 0; i < str.length; i++) {
+    if (!brackets.includes(str[i])) continue;
+    let bracketIndex = brackets.indexOf(str[i]);
+    if (bracketIndex % 2 === 0) {
+      s.push(bracketIndex + 1);
+    } else {
+      let lastBracketIndex = s.peek();
+      if (bracketIndex === lastBracketIndex) s.pop();
+      else return false;
+    }
+  }
+  return s.length() === 0;
+}
+
+console.log(balancedParentheses("fre({[]{()})g"));
