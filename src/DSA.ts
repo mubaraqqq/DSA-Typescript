@@ -363,4 +363,64 @@ function balancedParentheses(str: string): boolean {
   return s.length() === 0;
 }
 
-console.log(balancedParentheses("fre({[]{()})g"));
+console.log(balancedParentheses("fre({[]{()}})g"));
+
+// Exercise 2
+function infixToPostFix(infixStr: string): unknown {
+  let operators = "+,-,/,%,*,**,(,),^".split(",");
+  let operandStack = new Stack();
+  let operatorStack = new Stack();
+  let postFixStr = "";
+
+  function precedence(str: string) {
+    if (str === "@" || str === "(" || str === ")") return 1;
+    if (str === "+" || str === "-") return 2;
+    if (str === "/" || str === "*") return 3;
+    if (str === "^") return 4;
+    else return 0;
+  }
+
+  for (let i = 0; i < infixStr.length; i++) {
+    // if (operators.includes(infixStr[i])) {
+    //   if (operatorStack.length() > 0) {
+    //     let operator = operatorStack.pop();
+    //     postFixStr += operator;
+    //   }
+    //   operatorStack.push(infixStr[i]);
+    // } else if (infixStr[i] === "(") {
+    //   operatorStack.push(infixStr[i]);
+    // } else if (infixStr[i] === ")" && operatorStack.peek() === "(") {
+    //   // operatorStack.pop();
+    //   operatorStack.pop();
+    // } else {
+    //   postFixStr += infixStr[i];
+    //   operandStack.push(infixStr[i]);
+    // }
+    let el = infixStr[i];
+    if (operators.includes(el)) {
+      if (el === ")") {
+        while (operatorStack.peek() !== "(") {
+          postFixStr += operatorStack.pop();
+        }
+        operatorStack.pop();
+      } else if (el === "(") {
+        operatorStack.push(el);
+      } else if (precedence(el) > precedence(operatorStack.peek() as string)) {
+        operatorStack.push(el);
+      } else {
+        while (precedence(el) <= precedence(operatorStack.peek() as string)) {
+          postFixStr += operatorStack.pop();
+        }
+        operatorStack.push(el);
+      }
+    } else {
+      postFixStr += el;
+    }
+  }
+  while (operatorStack.length() > 0) {
+    postFixStr += operatorStack.pop();
+  }
+  console.log(operatorStack);
+  return { postFixStr };
+}
+console.log(infixToPostFix("5+(4-3)/3"));
