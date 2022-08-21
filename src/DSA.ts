@@ -423,4 +423,168 @@ function infixToPostFix(infixStr: string): unknown {
   console.log(operatorStack);
   return { postFixStr };
 }
-console.log(infixToPostFix("5+(4-3)/3"));
+console.log(infixToPostFix("5+(4-3/3)"));
+
+// Chapter 5
+
+interface IQueue {
+  datastore: unknown[];
+  enqueue: (el: unknown) => void;
+  dequeue: () => unknown;
+  front: () => unknown;
+  back: () => unknown;
+  toString: () => unknown;
+  empty: () => boolean;
+  count: () => number;
+}
+
+class Queue implements IQueue {
+  datastore: unknown[] = [];
+  enqueue(el: unknown): void {
+    this.datastore.push(el);
+  }
+  dequeue(): unknown {
+    return this.datastore.shift();
+  }
+  front(): unknown {
+    return this.datastore[0];
+  }
+  back(): unknown {
+    return this.datastore[this.datastore.length - 1];
+  }
+  toString(): unknown {
+    let str = "";
+    this.datastore.forEach((item, index) => {
+      if (index !== this.datastore.length - 1) {
+        str += item + ",";
+      } else {
+        str += item;
+      }
+    });
+    return str;
+  }
+  empty(): boolean {
+    let length = this.datastore.length;
+    if (length > 0) return false;
+    return true;
+  }
+  count(): number {
+    return this.datastore.length;
+  }
+}
+
+let q = new Queue();
+q.enqueue("Meredith");
+q.enqueue("Cynthia");
+q.enqueue("Jennifer");
+console.log(q.toString());
+console.log(q.empty());
+console.log("Front of queue", q.front());
+console.log("Back of queue", q.back());
+
+// radix sort
+
+function distribute(
+  nums: number[],
+  queues: IQueue[],
+  n: number,
+  digit: number
+) {
+  for (let i = 0; i < n; i++) {
+    if (digit === 1) {
+      queues[nums[i] % 10].enqueue(nums[i]);
+    } else {
+      queues[Math.floor(nums[i] / 10)]?.enqueue(nums[i]);
+    }
+  }
+}
+
+function collect(queues: IQueue[], nums: number[]) {
+  let i = 0;
+  for (let digits = 0; digits < 10; digits++) {
+    while (!queues[digits].empty()) {
+      nums[i++] = queues[digits].dequeue() as number;
+    }
+  }
+}
+
+let queues = [];
+for (let i = 0; i < 10; i++) {
+  queues[i] = new Queue();
+}
+let nums = [];
+for (let i = 0; i < 10; i++) {
+  nums[i] = Math.floor(Math.random() * 101);
+}
+console.log(nums);
+distribute(nums, queues, 10, 1);
+collect(queues, nums);
+distribute(nums, queues, 10, 10);
+collect(queues, nums);
+console.log(nums);
+
+// Exercise 1
+
+class Dequeue implements Omit<IQueue, "enqueue" | "dequeue"> {
+  datastore: unknown[] = [];
+  enqueueFront(el: unknown): void {
+    this.datastore.unshift(el);
+  }
+  enqueueBack(el: unknown): void {
+    this.datastore.push(el);
+  }
+  dequeueFront(): unknown {
+    return this.datastore.shift();
+  }
+  dequeueBack(): unknown {
+    return this.datastore.pop();
+  }
+  front(): unknown {
+    return this.datastore[0];
+  }
+  back(): unknown {
+    return this.datastore[this.datastore.length - 1];
+  }
+  toString(): unknown {
+    let str = "";
+    this.datastore.forEach((item, index) => {
+      if (index !== this.datastore.length - 1) {
+        str += item + ",";
+      } else {
+        str += item;
+      }
+    });
+    return str;
+  }
+  empty(): boolean {
+    let length = this.datastore.length;
+    if (length > 0) return false;
+    return true;
+  }
+  count(): number {
+    return this.datastore.length;
+  }
+}
+
+// Exercise 2
+
+function palindrome(word: string): boolean {
+  let front = new Dequeue();
+  let reverse = new Dequeue();
+  let forwardLetter = "";
+  let backwardLetter = "";
+  let wordArr = word.split("");
+  wordArr.forEach((letter, index) => {
+    front.enqueueBack(letter);
+    reverse.enqueueFront(letter);
+  });
+  console.log(reverse.toString());
+  while (front.count() > 0) {
+    forwardLetter += front.dequeueFront();
+    backwardLetter += reverse.dequeueFront();
+  }
+
+  return forwardLetter.toLowerCase() === backwardLetter.toLowerCase();
+}
+
+console.log(palindrome("kayaks"));
