@@ -345,7 +345,9 @@ function factorial(num: number): number {
 }
 
 console.log(factorial(0));
+
 // Exercise 1
+
 function balancedParentheses(str: string): boolean {
   let brackets = "(){}[]";
   let s = new Stack();
@@ -425,7 +427,7 @@ function infixToPostFix(infixStr: string): unknown {
 }
 console.log(infixToPostFix("5+(4-3/3)"));
 
-// Chapter 5
+// Chapter 5 - Queues
 
 interface IQueue {
   datastore: unknown[];
@@ -588,3 +590,409 @@ function palindrome(word: string): boolean {
 }
 
 console.log(palindrome("kayaks"));
+
+// type El = { name: string; code: number };
+// class Aqueue implements Omit<IQueue, "enqueue" | "dequeue"> {
+//   datastore: El[] = [];
+//   enqueueFront(el: El): void {
+//     this.datastore.unshift(el);
+//   }
+//   enqueueBack(el: El): void {
+//     this.datastore.push(el);
+//   }
+//   dequeueFront(): unknown {
+//     return this.datastore.shift();
+//   }
+//   dequeueBack(): unknown {
+//     return this.datastore.pop();
+//   }
+//   front(): unknown {
+//     return this.datastore[0];
+//   }
+//   back(): unknown {
+//     return this.datastore[this.datastore.length - 1];
+//   }
+//   toString(): unknown {
+//     let str = "";
+//     this.datastore.forEach((item, index) => {
+//       // if (index !== this.datastore.length - 1) {
+//       //   str += item + ",";
+//       // } else {
+//       //   str += item;
+//       // }
+//       str += item.name + " code: " + item.code + " ";
+//     });
+//     return str;
+//   }
+//   empty(): boolean {
+//     let length = this.datastore.length;
+//     if (length > 0) return false;
+//     return true;
+//   }
+//   count(): number {
+//     return this.datastore.length;
+//   }
+//   priorityDequeueLess(): El {
+//     let priority = this.datastore[0].code;
+//     for (let i = 1; i < this.datastore.length; i++) {
+//       if (this.datastore[i].code < priority) {
+//         console.log(this.datastore[i].code);
+//         priority = i;
+//       }
+//     }
+//     return this.datastore.splice(priority, 1)[0];
+//   }
+// }
+
+// class Patient {
+//   name: string;
+//   code: number;
+//   constructor(name: string, code: number) {
+//     this.name = name;
+//     this.code = code;
+//   }
+// }
+
+// let p = new Patient("Smith", 5);
+// let ed = new Aqueue();
+// ed.enqueueBack(p);
+// p = new Patient("Jones", 4);
+// ed.enqueueBack(p);
+// p = new Patient("Fehrenbach", 5);
+// ed.enqueueBack(p);
+// p = new Patient("Brown", 3);
+// ed.enqueueBack(p);
+// p = new Patient("Ingram", 1);
+// ed.enqueueBack(p);
+// p = new Patient("Inram", 2);
+// ed.enqueueBack(p);
+// console.log(ed.toString());
+// let seen = ed.priorityDequeueLess();
+// console.log(seen.name, seen.code);
+// seen = ed.priorityDequeueLess();
+// console.log(seen.name, seen.code);
+// seen = ed.priorityDequeueLess();
+// console.log(seen.name, seen.code);
+// seen = ed.priorityDequeueLess();
+// console.log(seen.name, seen.code);
+// seen = ed.priorityDequeueLess();
+// console.log(seen.name, seen.code);
+
+// Chapter 6 - Linked Lists
+
+class ListNode {
+  element: unknown;
+  next: ListNode | null = null;
+  constructor(element: unknown) {
+    this.element = element;
+  }
+}
+
+class LList {
+  head = new ListNode("head");
+  find(item: unknown): ListNode {
+    let currNode = this.head;
+    while (currNode.element !== item) {
+      currNode = currNode.next as ListNode;
+    }
+    return currNode;
+  }
+  insert(newElement: unknown, item: unknown): void {
+    let newNode = new ListNode(newElement);
+    let current = this.find(item);
+    newNode.next = current.next;
+    current.next = newNode;
+  }
+  display() {
+    let currNode = this.head;
+    while (currNode.next !== null) {
+      let next = currNode.next;
+      console.log(next.element);
+      currNode = next;
+    }
+  }
+  findPrevious(item: unknown): ListNode {
+    let currNode = this.head;
+    while (currNode.next !== null && currNode.next.element !== item) {
+      currNode = currNode.next;
+    }
+    return currNode;
+  }
+  remove(item: unknown) {
+    let prevNode = this.findPrevious(item);
+    if (prevNode.next !== null) {
+      prevNode.next = prevNode.next.next;
+    }
+  }
+}
+
+let cities = new LList();
+cities.insert("Conway", "head");
+cities.insert("Russellville", "Conway");
+cities.insert("Alma", "Russellville");
+cities.display();
+cities.remove("Russellville");
+cities.display();
+
+// Doubly Linked List
+
+class DListNode {
+  element: unknown;
+  next: DListNode | null = null;
+  previous: DListNode | null = null;
+  constructor(element: unknown) {
+    this.element = element;
+  }
+}
+
+class DList {
+  head = new DListNode("head");
+  find(item: unknown) {
+    let currNode = this.head;
+    while (currNode.element !== item) {
+      currNode = currNode.next as DListNode;
+    }
+    return currNode;
+  }
+  insert(newElement: unknown, item: unknown) {
+    let newNode = new DListNode(newElement);
+    let current = this.find(item);
+    newNode.next = current.next;
+    newNode.previous = current;
+    current.next = newNode;
+  }
+  remove(item: unknown) {
+    let currNode = this.find(item);
+    if (currNode.next !== null && currNode.previous !== null) {
+      currNode.previous.next = currNode.next;
+      currNode.next.previous = currNode.previous;
+      currNode.next = null;
+      currNode.previous = null;
+    }
+  }
+  findLast(): DListNode {
+    let currNode = this.head;
+    while (currNode.next !== null) {
+      currNode = currNode.next;
+    }
+    return currNode;
+  }
+  display() {
+    let currNode = this.head;
+    while (currNode.next !== null) {
+      console.log(currNode.next.element);
+      currNode = currNode.next;
+    }
+  }
+  displayReverse() {
+    let currNode = this.head;
+    currNode = this.findLast();
+    while (currNode.previous !== null) {
+      console.log(currNode.element);
+      currNode = currNode.previous;
+    }
+  }
+}
+
+let places = new DList();
+places.insert("Conway", "head");
+places.insert("Rusellville", "Conway");
+places.insert("Carlisle", "Rusellville");
+places.insert("Alma", "Carlisle");
+places.display();
+places.remove("Carlisle");
+places.display();
+places.displayReverse();
+
+// Cricularly Linked Lists
+
+class CList {
+  head = new ListNode("head");
+  constructor() {
+    this.head.next = this.head;
+  }
+  find(item: unknown) {
+    let currNode = this.head;
+    while (currNode.next !== null && currNode.element !== item) {
+      currNode = currNode.next;
+    }
+    return currNode;
+  }
+  insert(newElement: unknown, item: unknown) {
+    let newNode = new ListNode(newElement);
+    let currNode = this.find(item);
+    newNode.next = currNode.next;
+    currNode.next = newNode;
+  }
+  display() {
+    let currNode = this.head;
+    while (currNode.next !== null && currNode.next.element !== "head") {
+      console.log(currNode.next.element);
+      currNode = currNode.next;
+    }
+  }
+  findPrevious(item: unknown) {
+    let currNode = this.head;
+    while (currNode.next !== null && currNode.next.element !== item) {
+      currNode = currNode.next;
+    }
+  }
+}
+
+// Exercise 1 & 3
+// Linked List for Exercise 1
+class Exercise1LList {
+  head = new ListNode("head");
+  current = this.head;
+  totalNodes = 1;
+  node = 1;
+  find(item: unknown) {
+    let currNode = this.head;
+    while (currNode.next !== null && currNode.element !== item) {
+      currNode = currNode.next;
+    }
+    return currNode;
+  }
+  findPrevious(item: unknown) {
+    let currNode = this.head;
+    while (currNode.next !== null && currNode.next.element !== item) {
+      currNode = currNode.next;
+    }
+    return currNode;
+  }
+  insert(newElement: unknown, item: unknown) {
+    let newNode = new ListNode(newElement);
+    let currNode = this.find(item);
+    newNode.next = currNode.next;
+    currNode.next = newNode;
+    this.totalNodes++;
+  }
+  display() {
+    let currNode = this.head;
+    while (currNode.next != null) {
+      console.log(currNode.next.element);
+      currNode = currNode.next;
+    }
+  }
+  advance(n: number) {
+    let currNode = this.current;
+    let advance = this.node + n;
+    if (advance > this.totalNodes) return "Node length exceeded";
+    while (currNode.next !== null && this.node < advance) {
+      currNode = currNode.next;
+      this.node++;
+    }
+    this.current = currNode;
+  }
+  show() {
+    return this.current.element;
+  }
+}
+
+let advance = new Exercise1LList();
+advance.insert("Conway", "head");
+advance.insert("Rusellville", "Conway");
+advance.insert("Carlisle", "Rusellville");
+advance.insert("Alma", "Carlisle");
+advance.display();
+advance.advance(1);
+console.log(advance.show());
+advance.advance(1);
+console.log(advance.show());
+advance.advance(1);
+console.log(advance.show());
+
+// Exercise 2 & 3
+// Doubly Linked List
+
+class Exercise2DLList {
+  head = new DListNode("head");
+  current = this.head;
+  error = false;
+  forward = 0;
+  backwards = 0;
+  totalNodes = 1;
+  node = 1;
+  find(item: unknown) {
+    let currNode = this.head;
+    while (currNode.next !== null && currNode.element !== item) {
+      currNode = currNode.next;
+    }
+    return currNode;
+  }
+  findPrevious(item: unknown) {
+    let currNode = this.head;
+    while (currNode.next !== null && currNode.next.element !== item) {
+      currNode = currNode.next;
+    }
+    return currNode;
+  }
+  display() {
+    let currNode = this.head;
+    while (currNode.next !== null) {
+      console.log(currNode.next.element);
+      currNode = currNode.next;
+    }
+  }
+  insert(newElement: unknown, item: unknown) {
+    let newNode = new DListNode(newElement);
+    let currNode = this.find(item);
+    newNode.next = currNode.next;
+    newNode.previous = currNode;
+    currNode.next = newNode;
+    this.totalNodes++;
+  }
+  remove(item: unknown) {
+    let prevNode = this.findPrevious(item);
+    let currNode = this.find(item);
+    if (currNode.next !== null && currNode.previous !== null) {
+      prevNode.next = currNode.next;
+      currNode.next.previous = prevNode;
+      currNode.next = null;
+      currNode.previous = null;
+    }
+  }
+  advance(n: number) {
+    let currNode = this.current;
+    this.forward = this.node + n;
+    if (this.forward > this.totalNodes) this.error = true;
+    else {
+      while (currNode.next !== null && this.node < this.forward) {
+        currNode = currNode.next;
+        this.node++;
+        this.error = false;
+      }
+    }
+    this.current = currNode;
+  }
+  back(n: number) {
+    let currNode = this.current;
+    this.backwards = this.node - n;
+    if (this.backwards < 1) this.error = true;
+    else {
+      while (currNode.previous !== null && this.node > this.backwards) {
+        currNode = currNode.previous;
+        this.node--;
+        this.error = false;
+      }
+    }
+    this.current = currNode;
+  }
+  show() {
+    if (this.error) return "Node Limit exceeded";
+    return this.current.element;
+  }
+}
+
+let backtrack = new Exercise2DLList();
+backtrack.insert("Conway", "head");
+backtrack.insert("Rusellville", "Conway");
+backtrack.insert("Carlisle", "Rusellville");
+backtrack.insert("Alma", "Carlisle");
+backtrack.display();
+backtrack.advance(1);
+console.log(backtrack.show());
+backtrack.advance(2);
+console.log(backtrack.show());
+backtrack.back(1);
+console.log(backtrack.show());
