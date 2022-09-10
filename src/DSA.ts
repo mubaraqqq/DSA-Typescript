@@ -1124,3 +1124,84 @@ circle.display();
 // let roman3 = new Romans("Mubb", 3);
 // circle.insert(roman3, roman2);
 // circle.display();
+
+// Chapter 7 - Dictionaries
+
+class Dictionary {
+  datastore: unknown[];
+  constructor() {
+    this.datastore = new Array();
+  }
+  add(key: any, value: unknown) {
+    this.datastore[key] = value;
+  }
+  find(key: any) {
+    return this.datastore[key];
+  }
+  remove(key: any) {
+    delete this.datastore[key];
+  }
+  showAll() {
+    for (let key of Object.keys(this.datastore).sort()) {
+      // @ts-ignore
+      console.log(key + " -> " + this.datastore[key]);
+    }
+  }
+  count() {
+    let n = 0;
+    for (const key in this.datastore) {
+      n++;
+    }
+    return n;
+  }
+  clear() {
+    for (const key in this.datastore) {
+      delete this.datastore[key];
+    }
+  }
+}
+
+let pbook = new Dictionary();
+pbook.add("Mike", "123");
+pbook.add("David", "345");
+pbook.add("Cynthia", "456");
+console.log("Number of entries: " + pbook.count());
+console.log(`David's extension: ` + pbook.find("David"));
+pbook.remove("David");
+pbook.showAll();
+pbook.clear();
+console.log("Number of entries: " + pbook.count());
+
+// Exercise 2 & 3
+class Exercise2Dictionary {
+  datastore: number[];
+  constructor() {
+    this.datastore = [];
+  }
+  add(key: any, value: number = 1) {
+    if (Object.keys(this.datastore).includes(key)) {
+      this.datastore[key]++;
+    } else {
+      this.datastore[key] = value;
+    }
+  }
+  find(key: any) {
+    return this.datastore[key];
+  }
+  delete(key: any) {
+    delete this.datastore[key];
+  }
+  showAll() {
+    for (let key of Object.keys(this.datastore).sort()) {
+      // @ts-ignore
+      console.log(key + ": " + this.datastore[key]);
+    }
+  }
+}
+
+let exercise2String = "the brown fox jumped over the blue fox";
+let exercise2Dictionary = new Exercise2Dictionary();
+for (let word of exercise2String.split(" ")) {
+  exercise2Dictionary.add(word);
+}
+exercise2Dictionary.showAll();
