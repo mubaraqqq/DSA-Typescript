@@ -1205,3 +1205,134 @@ for (let word of exercise2String.split(" ")) {
   exercise2Dictionary.add(word);
 }
 exercise2Dictionary.showAll();
+
+// Chapter 8 - Hash Tables
+
+class HashTable {
+  table = new Array(137);
+  simpleHash(data: string) {
+    let total = 0;
+    for (let i = 0; i < data.length; i++) {
+      total += data.charCodeAt(i);
+    }
+    console.log("Hash value: " + data + " -> " + total);
+    return total % this.table.length;
+  }
+  betterHash(data: string) {
+    const H = 37;
+    let total = 0;
+    for (let i = 0; i < data.length; i++) {
+      total += H * total + data.charCodeAt(i);
+    }
+    console.log("Hash value: " + data + " -> " + total);
+    total = total % this.table.length;
+    return total;
+  }
+  buildChains() {
+    this.table.forEach((_, i) => {
+      this.table[i] = new Array();
+    });
+  }
+  oldPut(data: string) {
+    let pos = this.simpleHash(data);
+    this.table[pos] = data;
+  }
+  put(data: string) {
+    let pos = this.betterHash(data);
+    this.table[pos] = data;
+  }
+  newPut(key: string, data: unknown) {
+    let pos = this.betterHash(key);
+    this.table[pos] = data;
+  }
+  put2(key: string, data: unknown) {
+    let pos = this.betterHash(key);
+    let index = 0;
+    if (this.table[pos][index] == undefined) {
+      this.table[pos][index + 1] = data;
+    } else {
+      while (this.table[pos][index] !== undefined) {
+        ++index;
+      }
+      this.table[pos][index] = data;
+    }
+  }
+  get(key: string) {
+    return this.table[this.betterHash(key)];
+  }
+  get2(key: string) {
+    let index = 0;
+    let pos = this.betterHash(key);
+    if (this.table[pos][index] === key) {
+      return this.table[pos][index + 1];
+    }
+  }
+  showDistro() {
+    let n = 0;
+    this.table.forEach((element, index) => {
+      if (element !== undefined) {
+        console.log(index + ": " + this.table[index]);
+      }
+    });
+  }
+  showDistro2() {
+    let n = 0;
+    this.table.forEach((element, index) => {
+      if (element[0] !== undefined) {
+        console.log(index + ": " + this.table[index]);
+      }
+    });
+  }
+}
+
+let someNames = [
+  "David",
+  "Jennifer",
+  "Donnte",
+  "Raymond",
+  "Cynthia",
+  "Mike",
+  "Clayton",
+  "Danny",
+  "Jonathan",
+];
+
+let hTable = new HashTable();
+someNames.forEach((name) => hTable.put(name));
+hTable.showDistro();
+
+function getRandomInt(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function genStuData(arr: Array<string>) {
+  arr.forEach((_, i) => {
+    let num = "";
+    for (let j = 1; j <= 9; ++j) {
+      num += Math.floor(Math.random() * 10).toString();
+    }
+    num += getRandomInt(50, 100).toString();
+    arr[i] = num;
+  });
+}
+
+let numStudents = 10;
+let arrSize = 97;
+let idLen = 9;
+let students: Array<string> = new Array(numStudents).fill("");
+
+genStuData(students);
+console.log("Student data: \n");
+students.forEach((student) => {
+  console.log(student.substring(0, 8) + " " + student.substring(9));
+});
+console.log("\n\nData distribution: \n");
+let hTable1 = new HashTable();
+students.forEach((student) => {
+  hTable1.put(student);
+});
+hTable1.showDistro();
+
+let hTable2 = new HashTable();
+hTable2.buildChains();
+someNames.forEach((name) => hTable2.oldPut(name));
+hTable2.showDistro2();
