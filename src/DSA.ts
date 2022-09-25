@@ -1336,3 +1336,116 @@ let hTable2 = new HashTable();
 hTable2.buildChains();
 someNames.forEach((name) => hTable2.oldPut(name));
 hTable2.showDistro2();
+
+// Chapter 9 - Sets
+
+class ISet {
+  datastore: unknown[] = [];
+  contains(data: unknown) {
+    return this.datastore.includes(data);
+  }
+  add(data: unknown) {
+    if (this.datastore.indexOf(data) < 0) {
+      this.datastore.push(data);
+      return true;
+    } else {
+      return false;
+    }
+  }
+  remove(data: unknown) {
+    let pos = this.datastore.indexOf(data);
+    if (pos > 1) {
+      this.datastore.splice(pos, 1);
+      return true;
+    } else {
+      return false;
+    }
+  }
+  union(set: ISet) {
+    let tempSet = new ISet();
+    for (let i = 0; i < this.datastore.length; i++) {
+      tempSet.add(this.datastore[i]);
+    }
+    for (let i = 0; i < set.datastore.length; i++) {
+      if (!tempSet.contains(set.datastore[i])) {
+        tempSet.datastore.push(set.datastore[i]);
+      }
+    }
+    return tempSet;
+  }
+  intersect(set: ISet) {
+    let tempSet = new ISet();
+    for (let i = 0; i < this.datastore.length; i++) {
+      if (set.contains(this.datastore[i])) {
+        tempSet.add(this.datastore[i]);
+      }
+    }
+    return tempSet;
+  }
+  get size() {
+    return this.datastore.length;
+  }
+  subset(set: ISet) {
+    if (set.size > this.size) return false;
+    else {
+      for (let number of this.datastore) {
+        if (!set.contains(number)) return false;
+      }
+    }
+    return true;
+  }
+  difference(set: ISet) {
+    let tempSet = new ISet();
+    for (let item of this.datastore) {
+      if (!set.contains(item)) {
+        tempSet.add(item);
+      }
+    }
+    return tempSet;
+  }
+  show() {
+    return this.datastore;
+  }
+}
+
+let setNames = new ISet();
+setNames.add("David");
+setNames.add("Jennifer");
+setNames.add("Cynthia");
+setNames.add("Mike");
+setNames.add("Raymond");
+setNames.add("Mike");
+
+if (setNames.add("Mike")) {
+  console.log("Mike added");
+} else {
+  console.log(`Can't add Mike, must already be in set`);
+}
+console.log(setNames.show());
+
+let removed = "Mike";
+if (setNames.remove(removed)) {
+  console.log(`${removed} removed`);
+} else {
+  console.log(`${removed} not removed`);
+}
+
+setNames.add("Clayton");
+console.log(setNames.show());
+removed = "Alisa";
+console.log(
+  setNames.remove(removed) ? `${removed} removed.` : `${removed} not removed.`
+);
+
+let cts = new ISet();
+cts.add("Mike");
+cts.add("Clayton");
+cts.add("Jennifer");
+cts.add("Raymond");
+let dmp = new ISet();
+dmp.add("Raymond");
+dmp.add("Cynthia");
+dmp.add("Jonathan");
+let it = new ISet();
+it = cts.union(dmp);
+console.log(it.show());
